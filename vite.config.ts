@@ -1,15 +1,13 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// Fix: Import 'cwd' from 'node:process' to avoid TypeScript errors with the global 'process' object.
-import { cwd } from 'node:process'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, cwd(), '');
-  return {
-    plugins: [react()],
-    define: {
-      'process.env.API_KEY': JSON.stringify(env.API_KEY),
-    }
+export default defineConfig({
+  plugins: [react()],
+  // Khối 'define' này rất quan trọng.
+  // Nó lấy API_KEY từ môi trường build của Vercel (process.env.API_KEY)
+  // và làm cho nó có sẵn trong mã nguồn phía client của bạn dưới cùng một tên.
+  define: {
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
   }
 })
